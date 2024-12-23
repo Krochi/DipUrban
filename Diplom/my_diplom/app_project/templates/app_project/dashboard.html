@@ -1,0 +1,54 @@
+{% extends 'app_project/base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <h2>Добро пожаловать на дашборд, {{ user.username }}!</h2>
+
+    <form action="{% url 'add_image_feed' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="image">Выберите изображение для загрузки:</label>
+            <input type="file" name="image" id="image" class="form-control-file" required>
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Загрузить</button>
+    </form>
+    <form method="post">
+    {% csrf_token %}
+    <button type="submit">Кластеризовать изображения</button>
+</form>
+    <a href="{% url 'predict_probabilities' %}" class="btn btn-success mt-4">Перейти к прогнозу вероятностей</a>
+{% for image in images %}
+    <div>
+        <img src="{{ image.image.url }}" alt="Image" style="width: 200px;">
+        <p>Класс: {{ image.predicted_class }}</p>
+        <p>Метка: {{ image.predicted_label }}</p>
+        <p>Кластер: {{ image.cluster }}</p>
+    </div>
+{% endfor %}
+    <hr>
+
+    <h3>Загруженные изображения:</h3>
+    {% if images %}
+        <div class="row">
+            {% for image in images %}
+                <div class="col-md-4 mt-3">
+                    <div class="card">
+                        <img src="{{ image.image.url }}" class="card-img-top" alt="Изображение">
+                        <div class="card-body">
+                            <p class="card-text">Результат классификации: {{ image.predicted_label }}</p>
+                            <form action="{% url 'delete_image' image.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Удалить</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Загруженных изображений пока нет.</p>
+    {% endif %}
+</div>
+{% endblock %}
+

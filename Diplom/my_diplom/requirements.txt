@@ -1,0 +1,12 @@
+django
+scikit-learn
+torch
+torchvision
+tensorflow
+psycopg2-binary
+Flask
+Flask-SQLAlchemy
+Flask-Migrate
+Flask-Login
+Flask-WTF
+Pillow

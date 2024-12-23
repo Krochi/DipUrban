@@ -1,0 +1,17 @@
+{% extends 'app_project/base.html' %}
+
+{% block content %}
+<h1>Загрузите изображение</h1>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Загрузить</button>
+</form>
+
+{% if message %}
+    <div class="alert alert-success mt-3">{{ message }}</div>
+{% endif %}
+{% endblock %}
+
+
+
