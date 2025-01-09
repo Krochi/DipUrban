@@ -81,7 +81,7 @@ python manage.py runserver
     4. Изображения будут автоматически распределены по кластерам, и результаты отобразятся на странице.
     
     ![Дашборд]https://github.com/Krochi/DipUrban/blob/main/Diplom/my_diplom/media/screenshot/dashbord.png
-    
+    ![Дашборд делит-файл]https://github.com/Krochi/DipUrban/blob/main/Diplom/my_diplom/media/screenshot/dashbord-delete.png
 
 Основной функционал
 
