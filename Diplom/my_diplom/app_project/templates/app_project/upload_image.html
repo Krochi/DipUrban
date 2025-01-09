@@ -1,10 +1,14 @@
+<!-- Шаблон для загрузки изображения-->
 {% extends 'app_project/base.html' %}
 
+<!-- Форма для загрузки изображения-->
 {% block content %}
 <div class="container mt-4">
     <h1>Загрузить изображение</h1>
+    <!-- Форма -->
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
+        <!-- Поле для загрузки файла -->
         <div class="mb-3">
             <input type="file" name="image" class="form-control" required>
         </div>
