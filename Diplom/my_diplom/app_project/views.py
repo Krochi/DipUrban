@@ -1,3 +1,7 @@
+# Функции для обработки изображений, кластеризации и взаимодействие с пользователем
+"""
+Включает обработку запросов для загрузки изображений, их предсказания, кластеризации и регистрации пользователей.
+"""
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -6,11 +10,31 @@ from .models import Image
 from .image_recognition import predict_image, predict_image_probabilities
 from .utils import cluster_images
 
-def home(request):
+# Домашняя страница
+def home(request): 
+     
+    """
+        Главная страница сайта с базовой информацией.
+
+        Параметры:
+        -- request: HTTP-запрос
+
+        Возвращает:
+        -- render: Рендерит домашнюю страницу
+        """
     return render(request, 'app_project/home.html')
 
+# Дашборд досиупен только зарегистрированным пользователям
 @login_required
-def dashboard(request):
+def dashboard(request): 
+   
+    """
+        Параметры:
+        -- request: HTTP-запрос
+
+        Возвращает:
+        -- render: Рендерит страницу дашборда с изображениями и возможностью кластеризации.
+        """
     if request.method == "POST":
         if 'cluster_button' in request.POST:
             cluster_images()
@@ -19,7 +43,15 @@ def dashboard(request):
     images = Image.objects.all()
     return render(request, 'app_project/dashboard.html', {'images': images})
 
-def upload_image(request):
+# Загрузка изображений пользователем
+def upload_image(request):  
+    """
+        Параметры:
+        -- request: HTTP-запрос
+
+        Возвращает:
+        -- render: Рендерит форму загрузки изображения.
+        """
     if request.method == 'POST' and request.FILES['image']:
         form = ImageForm(request.POST, request.FILES)
         if form.is_valid():
@@ -32,8 +64,16 @@ def upload_image(request):
         form = ImageForm()
     return render(request, 'image_upload.html', {'form': form})
 
-
+# Добавление изображения с предсказанием класса
 def add_image_feed(request):
+    """
+
+        Параметры:
+        -- request: HTTP-запрос
+
+        Возвращает:
+        -- render: Рендерит форму для добавления изображения с возможным предсказанием.
+        """
     if request.method == 'POST':
         form = ImageUploadForm(request.POST, request.FILES)
         if form.is_valid():
@@ -59,13 +99,31 @@ def add_image_feed(request):
         form = ImageUploadForm()
     return render(request, 'app_project/add_image.html', {'form': form})
 
+# Удаление изображения по ID
+def delete_image(request, image_id): 
+    """
 
-def delete_image(request, image_id):
+        Параметры:
+        -- request: HTTP-запрос
+        -- image_id: ID изображения, которое нужно удалить
+
+        Возвращает:
+        -- redirect: Перенаправляет на страницу дашборда после удаления.
+        """
     image = get_object_or_404(Image, id=image_id)
     image.delete()
     return redirect('dashboard')
 
-def register(request):
+# Регистрация пользователя
+def register(request): 
+    """
+
+        Параметры:
+        -- request: HTTP-запрос
+
+        Возвращает:
+        -- render: Рендерит страницу регистрации, если запрос GET, или перенаправляет на дашборд.
+        """
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
@@ -76,7 +134,16 @@ def register(request):
         form = RegistrationForm()
     return render(request, 'app_project/registration.html', {'form': form})
 
-def predict_probabilities(request):
+# Предсказание вероятностей с использованием модели
+def predict_probabilities(request): 
+    """
+
+        Параметры:
+        -- request: HTTP-запрос
+
+        Возвращает:
+        -- render: Рендерит страницу с предсказанными вероятностями для изображения.
+        """
     if request.method == 'POST':
         form = ImageUploadForm(request.POST, request.FILES)
         if form.is_valid():
