@@ -80,6 +80,7 @@ python manage.py runserver
     
     4. Изображения будут автоматически распределены по кластерам, и результаты отобразятся на странице.
     
+    ![Дашборд]https://github.com/Krochi/DipUrban/blob/main/Diplom/my_diplom/media/screenshot/dashbord.png
     
 
 Основной функционал
@@ -131,4 +132,4 @@ python manage.py runserver
     • requirements.txt — Список всех зависимостей для установки.
     
     • README.md — Документация проекта.
-    https://github.com/Krochi/DipUrban/blob/main/Diplom/my_diplom/media/screenshot/dashbord-delete.png
+    ![Структура проекта]https://github.com/Krochi/DipUrban/blob/main/Diplom/my_diplom/media/screenshot/dashbord-delete.png
