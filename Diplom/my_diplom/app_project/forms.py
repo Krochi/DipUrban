@@ -17,7 +17,7 @@ from .models import Image
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
-
+# Форма загрузки изображения
 class ImageUploadForm(forms.ModelForm):
     """
         Форма используется для загрузки изображений в базу данных. Можно загрузить одно изображение,
@@ -29,7 +29,7 @@ class ImageUploadForm(forms.ModelForm):
         model = Image
         fields = ['image']
 
-
+# Добавление поля с возможностью кластеризации
 class ImageForm(forms.ModelForm):
     """
         Форма используется для загрузки изображения и выбора кластеризации, к которой оно будет отнесено.
@@ -43,7 +43,7 @@ class ImageForm(forms.ModelForm):
         model = Image
         fields = ['image','cluster']  #
 
-
+# Форма регистрации новых пользователей
 class RegistrationForm(UserCreationForm):
     """
        Форма используется для регистрации нового пользователя в системе.
@@ -61,7 +61,7 @@ class RegistrationForm(UserCreationForm):
         model = User
         fields = ['username', 'email', 'password1', 'password2']
 
-
+# Форма выбора изображения и прогнозирования вероятностей
 class ProbabilityPredictionForm(forms.ModelForm):
      """
        Форма используется для выбора изображения, на основе которого будет производиться прогноз вероятности.
