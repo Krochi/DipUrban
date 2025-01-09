@@ -131,4 +131,4 @@ python manage.py runserver
     • requirements.txt — Список всех зависимостей для установки.
     
     • README.md — Документация проекта.
-    
+    https://github.com/Krochi/DipUrban/blob/main/Diplom/my_diplom/media/screenshot/dashbord-delete.png
