@@ -1,5 +1,7 @@
+<!-- Шаблон Django страницы для загрузки изображения!-->
 {% extends 'app_project/base.html' %}
 
+<!--Блок содержащий форму вставки контента(изображения)!-->
 {% block content %}
 <h1>Загрузите изображение</h1>
 <form method="POST" enctype="multipart/form-data">
@@ -8,6 +10,7 @@
     <button type="submit" class="btn btn-success">Загрузить</button>
 </form>
 
+<!-- Поле для загрузки изображения!-->
 {% if message %}
     <div class="alert alert-success mt-3">{{ message }}</div>
 {% endif %}
