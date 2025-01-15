@@ -4,25 +4,27 @@
 <!-- Область загрузки изображения и результат прогнозирования -->
 {% block content %}
 <!-- Форма для загрузки изображения -->
-<h1>Прогнозирование вероятностей</h1>
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Загрузить изображение</button>
-</form>
+<div class="container">
+    <h1>Прогнозирование вероятностей</h1>
+    <form method="post" enctype="multipart/form-data" class="mt-4">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Загрузить изображение</button>
+    </form>
 
-<!-- Отображение результатов прогнозирования -->
-{% if predictions %}
-    <h2>Результаты:</h2>
-    <img src="{{ uploaded_image }}" alt="Загруженное изображение" style="max-width: 300px;">
-    <ul>
-        {% for class_name, probability in predictions.items %}
-            {% if probability > 0 %}
-                <li>{{ class_name }}: {{ probability }}%</li>
-            {% endif %}
-        {% endfor %}
-    </ul>
-{% endif %}
+     <!-- Отображение результатов -->
+    {% if predictions %}
+        <h2 class="mt-4">Результаты:</h2>
+        <img src="{{ uploaded_image }}" alt="Загруженное изображение" class="img-fluid mb-4" style="max-width: 300px;">
+        <ul class="list-group">
+            {% for class_name, probability in predictions.items %}
+                {% if probability > 0 %}
+                    <li class="list-group-item">{{ class_name }}: {{ probability }}%</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
 {% endblock %}
 
 

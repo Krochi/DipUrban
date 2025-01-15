@@ -5,10 +5,13 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
+from pyexpat.errors import messages
+
 from .forms import RegistrationForm, ImageUploadForm, ImageForm, ProbabilityPredictionForm
 from .models import Image
 from .image_recognition import predict_image, predict_image_probabilities
 from .utils import cluster_images
+from django.contrib import messages
 
 # Домашняя страница
 def home(request): 
@@ -35,12 +38,22 @@ def dashboard(request):
         Возвращает:
         -- render: Рендерит страницу дашборда с изображениями и возможностью кластеризации.
         """
-    if request.method == "POST":
-        if 'cluster_button' in request.POST:
-            cluster_images()
+    images = Image.objects.all()
+
+    if request.method == "POST" and 'cluster' in request.POST:
+        n_clusters = int(request.POST.get('n_clusters', 5)) # Получение кластеров из форм
+
+        request.session['n_clusters'] = n_clusters #Сохранение количества кластеров
+
+        # Проверка количества изображений для кластеризации
+        if images.count() < n_clusters:
+            messages.error(request, f"Недостаточно загруженных изображений {images.count()}, требуется минимум {n_clusters}.")
+        else:
+            cluster_images(n_clusters) # Передаём количество кластеров в функцию кластеризации
+            messages.success(request, f"Изображения успешно кластеризованы на {n_clusters} кластеров." )
+
         return redirect('dashboard')
 
-    images = Image.objects.all()
     return render(request, 'app_project/dashboard.html', {'images': images})
 
 # Загрузка изображений пользователем
@@ -77,6 +90,17 @@ def add_image_feed(request):
     if request.method == 'POST':
         form = ImageUploadForm(request.POST, request.FILES)
         if form.is_valid():
+            current_image_count = Image.objects.count()
+
+            #Получение количества кластеров
+            n_clusters = request.session.get('n_clusters', 5)
+
+            #Проверка допустимого значения кластеров
+            if current_image_count >= n_clusters:
+                messages.error(request, f" Превышенно количество изображений ({n_clusters}). Удалите лишнее изображение")
+                return redirect('dashboard')
+
+            #Сохраняем изображение
             image = form.save()
             image_path = image.image.path
 
@@ -89,11 +113,14 @@ def add_image_feed(request):
                 image.predicted_class = predicted_class
                 image.predicted_label = predicted_label
                 image.save()
-                cluster_images()
 
+                cluster_images(n_clusters)
+
+                messages.success(request, "Изображение загруженно и кластеризовано")
                 return redirect('dashboard')
             except Exception as e:
                 print(f"Error during prediction: {e}")
+                messages.error(request, f"Ошибка при обработке приложения: {e}")
                 return render(request, 'app_project/add_image.html', {'form': form, 'error': str(e)})
     else:
         form = ImageUploadForm()
@@ -159,3 +186,12 @@ def predict_probabilities(request):
     else:
         form = ImageUploadForm()
     return render(request, 'app_project/predict_probabilities.html', {'form': form})
+
+
+
+# def cluster_images_view(request):
+#     if request.method == 'POST':
+#         cluster_images()  # Вызов функции кластеризации
+#         return redirect('dashboard')
+#     else:
+#         return redirect('dashboard')

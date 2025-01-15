@@ -1,11 +1,12 @@
 <!-- Главная страница -->
-{% extends 'app_project/base.html' %} <!-- Расширение базового шаблона base.html-->
+{% extends 'app_project/base.html' %}
 
 {% block content %}
-<h1>Добро пожаловать на главную страницу!</h1>
-<p>Перейдите на <a href="{% url 'dashboard' %}">Дашборд</a>.</p>
+<div class="jumbotron text-center">
+    <h1 class="display-4">Добро пожаловать на главную страницу!</h1>
+    <p class="lead">Перейдите на <a href="{% url 'dashboard' %}" class="btn btn-primary btn-lg">Дашборд</a>.</p>
+</div>
 {% endblock %}
-
 
 
 

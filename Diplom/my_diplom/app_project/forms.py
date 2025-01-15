@@ -16,12 +16,12 @@ from django import forms
 from .models import Image
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from django.core.validators import FileExtensionValidator
 
 # Форма загрузки изображения
 class ImageUploadForm(forms.ModelForm):
     """
-        Форма используется для загрузки изображений в базу данных. Можно загрузить одно изображение,
-        которое будет сохранено в поле `image` модели `Image`.
+        Форма используется для загрузки изображений в базу данных.
 
             -- image (ImageField): Поле для загрузки изображения.
         """
@@ -33,7 +33,6 @@ class ImageUploadForm(forms.ModelForm):
 class ImageForm(forms.ModelForm):
     """
         Форма используется для загрузки изображения и выбора кластеризации, к которой оно будет отнесено.
-        Можно выбрать изображение и указать, к какому кластеру оно должно быть отнесено.
 
             -- image (ImageField): Поле для загрузки изображения.
             -- cluster (CharField): Поле для указания кластера изображения.
@@ -47,7 +46,6 @@ class ImageForm(forms.ModelForm):
 class RegistrationForm(UserCreationForm):
     """
        Форма используется для регистрации нового пользователя в системе.
-       Она включает в себя поля для ввода имени пользователя, email-адреса и пароля.
 
           -- username (CharField): Имя пользователя.
           -- email (EmailField): Электронная почта.
@@ -65,10 +63,21 @@ class RegistrationForm(UserCreationForm):
 class ProbabilityPredictionForm(forms.ModelForm):
      """
        Форма используется для выбора изображения, на основе которого будет производиться прогноз вероятности.
-       Выбирается одно изображение, и оно передается в систему для дальнейшего анализа.
 
            -- image (ImageField): Поле для выбора изображения для прогноза.
        """
+     class Meta:
+        model = Image
+        fields = ['image']
+
+
+class ImageUploadForm(forms.ModelForm):
+
     class Meta:
         model = Image
         fields = ['image']
+
+    # Валидация форматов
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['image'].validators.append(FileExtensionValidator(['jpg', 'jpeg', 'png']))

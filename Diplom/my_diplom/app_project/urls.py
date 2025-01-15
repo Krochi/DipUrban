@@ -38,6 +38,7 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='app_project/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('predict_probabilities/', views.predict_probabilities, name='predict_probabilities'),
+    path('cluster-images/', views.cluster_images, name='cluster_images'),
 
 ]
 # Обработка медиафайлов. Добавляет маршруты для медиафайлов

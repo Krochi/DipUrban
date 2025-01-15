@@ -1,42 +1,48 @@
 {% extends 'app_project/base.html' %}
 
 {% block content %}
-
-<div class="container mt-4">
+<div class="container">
     <h2>Добро пожаловать на дашборд, {{ user.username }}!</h2>
 
-    <form action="{% url 'add_image_feed' %}" method="post" enctype="multipart/form-data">
+    <!-- Отображение сообщений -->
+    {%if message%}
+        {%for message in message%}
+            <div class="alert {%if message.tags%}alert-{{message.tags}}{%endif%}">
+                {{message}}
+            </div>
+        {%endfor%}
+    {%endif%}
+
+    <form action="{% url 'add_image_feed' %}" method="post" enctype="multipart/form-data" class="mb-4">
         {% csrf_token %}
         <div class="form-group">
             <label for="image">Выберите изображение для загрузки:</label>
             <input type="file" name="image" id="image" class="form-control-file" required>
         </div>
-        <button type="submit" class="btn btn-primary mt-2">Загрузить</button>
+        <button type="submit" class="btn btn-primary">Загрузить</button>
     </form>
-    <form method="post">
-    {% csrf_token %}
-    <button type="submit">Кластеризовать изображения</button>
-</form>
-    <a href="{% url 'predict_probabilities' %}" class="btn btn-success mt-4">Перейти к прогнозу вероятностей</a>
-{% for image in images %}
-    <div>
-        <img src="{{ image.image.url }}" alt="Image" style="width: 200px;">
-        <p>Класс: {{ image.predicted_class }}</p>
-        <p>Метка: {{ image.predicted_label }}</p>
-        <p>Кластер: {{ image.cluster }}</p>
-    </div>
-{% endfor %}
-    <hr>
 
-    <h3>Загруженные изображения:</h3>
+    <form method="post" class="mb-4">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="n_cluster">Количество кластеров (максимум {{images.count}}): </label>
+            <input type="number" name="n_cluster" id="n_cluster" class="form-control" min="1" max="{{images.count}}" value={{request.session.n_clusters|default:3}} required>
+        </div>
+        <button type="submit" name="cluster_button" class="btn btn-secondary">Кластеризовать изображения</button>
+    </form>
+
+    <a href="{% url 'predict_probabilities' %}" class="btn btn-success mb-4">Перейти к прогнозу вероятностей</a>
+
+    <h3>Загруженные изображения ({{images.count}}):</h3>
     {% if images %}
         <div class="row">
             {% for image in images %}
-                <div class="col-md-4 mt-3">
+                <div class="col-md-4 mb-4">
                     <div class="card">
                         <img src="{{ image.image.url }}" class="card-img-top" alt="Изображение">
                         <div class="card-body">
                             <p class="card-text">Результат классификации: {{ image.predicted_label }}</p>
+                            <p class="card-text">Результат кластеризации: {{ image.cluster }}</p>
                             <form action="{% url 'delete_image' image.id %}" method="post">
                                 {% csrf_token %}
                                 <button type="submit" class="btn btn-danger">Удалить</button>
@@ -51,4 +57,3 @@
     {% endif %}
 </div>
 {% endblock %}
-
